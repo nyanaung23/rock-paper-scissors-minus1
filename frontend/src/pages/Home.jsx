@@ -1,24 +1,36 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import "./home.css";
 
-function Home(){
+function Home() {
   return (
-    <div className="vstack" style={{gap:18}}>
-      <h1>Rock • Paper • Scissors — <span className="kbd">Minus One</span></h1>
-      <div className="panel vstack">
-        <p>
-          Each player first chooses <b>two hands</b>. After saying <b>"minus one"</b>,
-          each removes one hand. Compare the <b>remaining</b> hand using classic RPS rules.
+    <main className = "home-page">
+      <div className = "home-wrap">
+        <h1 className = "home-title">Welcome to RPS–1!</h1>
+
+        <p className = "home-subtitle">
+          Experience Rock Paper Scissors with a twist! Pick two hands, then minus
+          one to outsmart your opponent.
         </p>
-        <div className="hstack">
-          <Link className="btn primary" to="/vs-computer"> Play vs Computer</Link>
-          <br></br>
-          <Link className="btn" to="/vs-local"> Play vs Local </Link>
-          <br></br>
-          <Link className="btn" to="/online"> Play Online </Link>
+
+        <div className = "seg-row">
+          <Link className = "seg-btn is-active" to = "/vs-computer">
+            <span className = "seg-emoji">⚙️</span>
+            <span>vs Computer</span>
+          </Link>
+
+          <Link className = "seg-btn" to = "/vs-local">
+            <span className = "seg-emoji">👥</span>
+            <span>vs Local</span>
+          </Link>
+
+          <span className = "seg-btn seg-item disabled">
+            <span className = "seg-emoji">🌐</span>
+            <span>Online (Coming Soon)</span>
+          </span>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

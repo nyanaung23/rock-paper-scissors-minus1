@@ -8,7 +8,7 @@ import OnlineGame from "./pages/OnlineGame";
 
 function Shell() {
   const { pathname } = useLocation();
-  const active = (p) => (typeof p==="function" ? p() : pathname===p) ? {background:"#222643",borderRadius:10,padding:"6px 10px"} : {padding:"6px 10px"};
+  const active = (p) => (typeof p==="function" ? p() : pathname===p) ? {background:"#fffff",borderRadius:10,padding:"6px 10px"} : {padding:"6px 10px"};
 
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", background:"#0f1220", color:"#e8ebff", fontFamily:"system-ui" }}>

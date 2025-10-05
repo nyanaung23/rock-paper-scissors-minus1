@@ -1,11 +1,21 @@
 import React from "react";
-import { EMOJI } from "../utils/game";
+import {EMOJI} from "../utils/game";
 
-export default function HandChoice({move, selected=false, disabled=false, onClick}){
+export default function HandChoice({move, selected, disabled, onClick}) {
   return (
-    <button className={"card" + (selected?" selected":"")} disabled={disabled} onClick={onClick}>
-      <div style={{fontSize:36}}>{EMOJI[move]}</div>
-      <div style={{marginTop:6, textTransform:"capitalize"}}>{move}</div>
+    <button
+      type = "button"
+      className = {`hand-btn ${selected ? "is-selected" : ""}`}
+      aria-pressed = {selected}
+      onClick = {onClick}
+      disabled = {disabled}
+    >
+      <span className = "hand-emoji" aria-hidden>
+        {EMOJI[move]}
+      </span>
+      <span className = "hand-label">
+        {move.toUpperCase()}
+      </span>
     </button>
   );
 }

@@ -1,13 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, {useMemo, useState} from "react";
+import {Link} from "react-router-dom";
 import TwoHandPicker from "../components/TwoHandPicker";
 import MinusOnePhase from "../components/MinusOnePhase";
-import Scoreboard from "../components/Scoreboard";
-import { judge, computerTwoHands, computerRemoveIndex, EMOJI } from "../utils/game";
+import {judge, computerTwoHands, computerRemoveIndex, EMOJI} from "../utils/game";
+import "./game.css";
 
-const PHASES = { PICK:"pick", MINUS:"minus", REVEAL:"reveal" };
+import computerWinImg from "./computerWin.png";
+import playerWinImg from "./soloPlayerWin.png";
+
+const PHASES = {PICK: "pick", SHOW: "show", MINUS: "minus", REVEAL: "reveal"};
 const TARGET = 3;
 
-export default function VsComputer(){
+export default function VsComputer() {
   const [p1Hands, setP1Hands] = useState([null, null]);
   const [p1Removed, setP1Removed] = useState(null);
 
@@ -15,106 +19,235 @@ export default function VsComputer(){
   const [botRemoved, setBotRemoved] = useState(null);
 
   const [phase, setPhase] = useState(PHASES.PICK);
-  const [score, setScore] = useState({p1:0,p2:0});
-  const [matchWinner, setMatchWinner] = useState(null); // "p1" | "p2" | null
+  const [score, setScore] = useState({p1: 0, p2: 0});
+  const [matchWinner, setMatchWinner] = useState(null);
 
-  const bothChosenTwo = useMemo(()=> p1Hands[0] && p1Hands[1], [p1Hands]);
+  const bothChosenTwo = useMemo(() => p1Hands[0] && p1Hands[1], [p1Hands]);
 
-  function beginMinus(){
-    if(!bothChosenTwo || matchWinner) return;
-    setPhase(PHASES.MINUS);
-    setBotRemoved(computerRemoveIndex());
+  const p1Final =
+    phase !== PHASES.PICK && p1Removed !== null ? p1Hands[Number(!p1Removed)] : null;
+  const p2Final =
+    phase !== PHASES.PICK && botRemoved !== null ? botHands[Number(!botRemoved)] : null;
+
+  function goShow() {
+    if (!bothChosenTwo || matchWinner) return;
+    setPhase(PHASES.SHOW);
   }
 
-  function doReveal(){
-    if(p1Removed===null || botRemoved===null || matchWinner) return;
+  function goMinus() {
+    if (matchWinner) return;
+    setBotRemoved(computerRemoveIndex());
+    setPhase(PHASES.MINUS);
+  }
 
-    const p1Final = p1Hands[Number(!p1Removed)];
-    const p2Final = botHands[Number(!botRemoved)];
-    const outcome = judge(p1Final, p2Final);
+  function doReveal() {
+    if (p1Removed === null || botRemoved === null || matchWinner) return;
 
-    // update score immediately on reveal
-    if(outcome === "p1"){
-      const ns = { ...score, p1: score.p1 + 1 };
+    const outcome = judge(
+      p1Hands[Number(!p1Removed)],
+      botHands[Number(!botRemoved)]
+    );
+
+    if (outcome === "p1") {
+      const ns = {...score, p1: score.p1 + 1};
       setScore(ns);
-      if(ns.p1 >= TARGET) setMatchWinner("p1");
-    } else if(outcome === "p2"){
-      const ns = { ...score, p2: score.p2 + 1 };
+      if (ns.p1 >= TARGET) setMatchWinner("p1");
+    } else if (outcome === "p2") {
+      const ns = {...score, p2: score.p2 + 1};
       setScore(ns);
-      if(ns.p2 >= TARGET) setMatchWinner("p2");
+      if (ns.p2 >= TARGET) setMatchWinner("p2");
     }
     setPhase(PHASES.REVEAL);
   }
 
-  const p1Final = phase!==PHASES.PICK && p1Removed!==null ? p1Hands[Number(!p1Removed)] : null;
-  const p2Final = phase!==PHASES.PICK && botRemoved!==null ? botHands[Number(!botRemoved)] : null;
-  const roundOutcome = judge(p1Final, p2Final);
-
-  function nextRound(){
-    if(matchWinner) return; // lock until reset
-    setP1Hands([null,null]); setP1Removed(null);
-    setBotHands(computerTwoHands()); setBotRemoved(null);
+  function nextRound() {
+    if (matchWinner) return;
+    setP1Hands([null, null]);
+    setP1Removed(null);
+    setBotHands(computerTwoHands());
+    setBotRemoved(null);
     setPhase(PHASES.PICK);
   }
 
-  function resetMatch(){
-    setScore({p1:0,p2:0});
+  function resetMatch() {
+    setScore({p1: 0, p2: 0});
     setMatchWinner(null);
-    setP1Hands([null,null]); setP1Removed(null);
-    setBotHands(computerTwoHands()); setBotRemoved(null);
+    setP1Hands([null, null]);
+    setP1Removed(null);
+    setBotHands(computerTwoHands());
+    setBotRemoved(null);
     setPhase(PHASES.PICK);
+  }
+
+  const phaseText =
+    phase === PHASES.PICK
+      ? "Pick two hands to begin."
+      : phase === PHASES.SHOW
+      ? "Both selections revealed. Now remove one hand."
+      : phase === PHASES.MINUS
+      ? "Remove one hand to make your final choice."
+      : "Reveal!";
+
+  if (matchWinner) {
+    const youWin = matchWinner === "p1";
+    const winnerImg = youWin ? playerWinImg : computerWinImg;
+
+    return (
+      <div className = "endpage">
+        <h1 className = "end-title">ROCK PAPER SCISSORS</h1>
+        <div className = {`end-result ${youWin ? "win" : "lose"}`}>
+          {youWin ? "YOU WIN!" : "YOU LOSE!"}
+        </div>
+
+        <div className = "end-media">
+          <img
+            src = {winnerImg}
+            alt = {youWin ? "Player wins" : "Computer wins"}
+            className = "end-hero-img"
+            draggable = "false"
+          />
+        </div>
+
+        <div className = "end-scorecard">
+          <div className = "end-card-title">SCOREBOARD</div>
+          <div className = "end-card-grid">
+            <div className = "end-card-col">
+              <div className = "end-card-label">YOU</div>
+              <div className = "end-card-num">{score.p1}</div>
+            </div>
+            <div className = "end-card-col">
+              <div className = "end-card-label">COMPUTER</div>
+              <div className = "end-card-num">{score.p2}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className = "end-actions">
+          <button className = "btn primary end-btn" onClick = {resetMatch}>
+            PLAY NEXT ROUND
+          </button>
+          <Link className = "btn ghost end-btn outline" to = "/">
+            RETURN TO MAIN MENU
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="vstack" style={{gap:16}}>
-      <h2>vs Computer</h2>
-      <Scoreboard score={score} />
+    <div className = "vs-page">
+      <div className = "bottom-wrap">
+        <aside className = "scoreboard panel">
+          <div className = "sb-title">SCOREBOARD</div>
 
-      {matchWinner && (
-        <div className="panel vstack" style={{borderColor:"#39d98a"}}>
-          <h3>Match Over</h3>
-          <div style={{fontWeight:700}}>
-            {matchWinner==="p1" ? "You win the match!" : "Computer wins the match"}
+          <div className = "sb-row">
+            <div className = "sb-label">You</div>
+            <div className = "sb-score">{score.p1}</div>
           </div>
-          <button className="btn primary" onClick={resetMatch}>Play Again</button>
-        </div>
-      )}
 
-      {phase===PHASES.PICK && (
-        <div className="panel vstack">
-          <h3>Your two hands</h3>
-          <TwoHandPicker value={p1Hands} onChange={setP1Hands} disabled={!!matchWinner}/>
-          <div className="hstack">
-            <button className="btn primary" disabled={!bothChosenTwo || !!matchWinner} onClick={beginMinus}>Minus One ▶</button>
-            <button className="btn ghost" onClick={()=>setP1Hands([null,null])} disabled={!!matchWinner}>Clear</button>
-          </div>
-        </div>
-      )}
+          <div className = "sb-divider" />
 
-      {phase===PHASES.MINUS && (
-        <div className="panel vstack">
-          <h3>Remove one hand</h3>
-          <MinusOnePhase hands={p1Hands} removedIndex={p1Removed} onRemove={setP1Removed} disabled={!!matchWinner}/>
-          <button className="btn primary" disabled={p1Removed===null || !!matchWinner} onClick={doReveal}>Reveal ▶</button>
-        </div>
-      )}
+          <div className = "sb-row">
+            <div className = "sb-label">COMPUTER</div>
+            <div className = "sb-score">{score.p2}</div>
+          </div>
+        </aside>
 
-      {phase===PHASES.REVEAL && (
-        <div className="panel vstack" style={{textAlign:"center"}}>
-          <h3>Reveal</h3>
-          <div className="hstack center" style={{gap:26}}>
-            <div><div className="muted">You</div><div style={{fontSize:48}}>{EMOJI[p1Final]}</div></div>
-            <div className="muted">vs</div>
-            <div><div className="muted">Computer</div><div style={{fontSize:48}}>{EMOJI[p2Final]}</div></div>
-          </div>
-          <div style={{fontSize:20, fontWeight:700, marginTop:8}}>
-            {roundOutcome==="draw"?"Draw": roundOutcome==="p1"?"You win the round!":"Computer wins the round"}
-          </div>
-          <div className="hstack center" style={{marginTop:12}}>
-            <button className="btn" onClick={nextRound} disabled={!!matchWinner}>Next Round</button>
-          </div>
+        <div className = "center-col">
+          <h1 className = "page-title">VS COMPUTER</h1>
+          <div className = "phase-callout panel">{phaseText}</div>
+
+          {phase === PHASES.PICK && (
+            <section className = "panel vstack stage-center">
+              <TwoHandPicker value = {p1Hands} onChange = {setP1Hands} />
+              <div className = "hstack" style = {{marginTop: 10}}>
+                <button
+                  className = "btn primary"
+                  disabled = {!bothChosenTwo}
+                  onClick = {goShow}
+                >
+                  Reveal ▶
+                </button>
+                <button
+                  className = "btn ghost"
+                  onClick = {() => setP1Hands([null, null])}
+                >
+                  Clear
+                </button>
+              </div>
+            </section>
+          )}
+
+          {phase === PHASES.SHOW && (
+            <section className = "panel vstack center stage-center peek-phase" style = {{textAlign: "center"}}>
+              <div className = "peek-grid">
+                <div>
+                  <div className = "muted">You chose</div>
+                  <div className = "peek-row">
+                    <div className = "peek-emoji">{EMOJI[p1Hands[0]]}</div>
+                    <div className = "peek-emoji">{EMOJI[p1Hands[1]]}</div>
+                  </div>
+                </div>
+                <div>
+                  <div className = "muted">Computer chose</div>
+                  <div className = "peek-row">
+                    <div className = "peek-emoji">{EMOJI[botHands[0]]}</div>
+                    <div className = "peek-emoji">{EMOJI[botHands[1]]}</div>
+                  </div>
+                </div>
+              </div>
+
+              <button className = "btn primary" style = {{marginTop: 16}} onClick = {goMinus}>
+                Continue to Minus One ▶
+              </button>
+            </section>
+          )}
+
+          {phase === PHASES.MINUS && (
+            <section className = "panel vstack minus-phase stage-center">
+              <MinusOnePhase
+                hands = {p1Hands}
+                removedIndex = {p1Removed}
+                onRemove = {setP1Removed}
+              />
+              <button
+                className = "btn primary"
+                style = {{marginTop: 10}}
+                disabled = {p1Removed === null}
+                onClick = {doReveal}
+              >
+                Reveal ▶
+              </button>
+            </section>
+          )}
+
+          {phase === PHASES.REVEAL && (
+            <section className = "panel vstack center stage-center" style = {{textAlign: "center"}}>
+              <div className = "reveal-row">
+                <div>
+                  <div className = "round-caption">You</div>
+                  <div className = "reveal-emoji">{EMOJI[p1Final]}</div>
+                </div>
+                <div className = "round-caption">vs</div>
+                <div>
+                  <div className = "round-caption">Computer</div>
+                  <div className = "reveal-emoji">{EMOJI[p2Final]}</div>
+                </div>
+              </div>
+              <div className = "round-outcome">
+                {judge(p1Final, p2Final) === "draw"
+                  ? "Draw"
+                  : judge(p1Final, p2Final) === "p1"
+                  ? "You win the round!"
+                  : "Computer wins the round"}
+              </div>
+              <button className = "btn btn-wide" onClick = {nextRound} style = {{marginTop: 8}}>
+                Next Round
+              </button>
+            </section>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,18 +1,29 @@
 import React from "react";
-import { EMOJI } from "../utils/game";
+import {EMOJI} from "../utils/game";
 
-export default function MinusOnePhase({ hands, removedIndex, onRemove, disabled }) {
+export default function MinusOnePhase({hands, removedIndex, onRemove, disabled}) {
   return (
-    <div className="deck">
-      {hands.map((m,idx)=> (
-        <button key={idx}
-          className={"card" + (removedIndex===idx?" selected":"")}
-          onClick={()=>onRemove(idx)} disabled={disabled}
-        >
-          <div style={{fontSize:36}}>{EMOJI[m]}</div>
-          <div className="small">Remove this hand</div>
-        </button>
-      ))}
+    <div className = "deck tp-row minus-phase">
+      {hands.map((m, idx) => {
+        const isRemoved = removedIndex === idx;
+        return (
+          <button
+            key = {idx}
+            type = "button"
+            className = {`hand-btn ${isRemoved ? "is-selected is-removed" : ""}`}
+            aria-pressed = {isRemoved}
+            onClick = {() => onRemove(idx)}
+            disabled = {disabled}
+          >
+            <span className = "hand-emoji" aria-hidden>
+              {EMOJI[m]}
+            </span>
+            <span className = "hand-label small">
+              {isRemoved ? "Removed" : "Keep"}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
