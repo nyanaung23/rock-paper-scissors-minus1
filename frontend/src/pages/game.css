@@ -328,6 +328,14 @@
   box-shadow : 0 8px 24px rgba(0,0,0,.28);
 }
 
+.peek-inline.panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background: #0f0f18;
+}
+
 @media (max-width : 1024px) {
   .vs-page {
     flex-direction : column;

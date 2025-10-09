@@ -75,40 +75,40 @@ export default function VsLocal() {
     const winnerImg = p1Wins ? player1WinImg : player2WinImg;
 
     return (
-      <div className = "endpage">
-        <h1 className = "end-title">ROCK PAPER SCISSORS</h1>
-        <div className = {`end-result ${p1Wins ? "win" : "lose"}`}>
+      <div className="endpage">
+        <h1 className="end-title">ROCK PAPER SCISSORS</h1>
+        <div className={`end-result ${p1Wins ? "win" : "lose"}`}>
           {p1Wins ? "PLAYER 1 WINS!" : "PLAYER 2 WINS!"}
         </div>
 
-        <div className = "end-media">
+        <div className="end-media">
           <img
-            src = {winnerImg}
-            alt = {p1Wins ? "Player 1 wins" : "Player 2 wins"}
-            className = "end-hero-img"
-            draggable = "false"
+            src={winnerImg}
+            alt={p1Wins ? "Player 1 wins" : "Player 2 wins"}
+            className="end-hero-img"
+            draggable="false"
           />
         </div>
 
-        <div className = "end-scorecard">
-          <div className = "end-card-title">SCOREBOARD</div>
-          <div className = "end-card-grid">
-            <div className = "end-card-col">
-              <div className = "end-card-label">PLAYER 1</div>
-              <div className = "end-card-num">{score.p1}</div>
+        <div className="end-scorecard">
+          <div className="end-card-title">SCOREBOARD</div>
+          <div className="end-card-grid">
+            <div className="end-card-col">
+              <div className="end-card-label">PLAYER 1</div>
+              <div className="end-card-num">{score.p1}</div>
             </div>
-            <div className = "end-card-col">
-              <div className = "end-card-label">PLAYER 2</div>
-              <div className = "end-card-num">{score.p2}</div>
+            <div className="end-card-col">
+              <div className="end-card-label">PLAYER 2</div>
+              <div className="end-card-num">{score.p2}</div>
             </div>
           </div>
         </div>
 
-        <div className = "end-actions">
-          <button className = "btn primary end-btn" onClick = {resetMatch}>
-            PLAY NEXT ROUND
+        <div className="end-actions">
+          <button className="btn primary end-btn" onClick={resetMatch}>
+            PLAY ANOTHER GAME
           </button>
-          <Link className = "btn ghost end-btn outline" to = "/">
+          <Link className="btn ghost end-btn outline" to="/">
             RETURN TO MAIN MENU
           </Link>
         </div>
@@ -116,43 +116,67 @@ export default function VsLocal() {
     );
   }
 
-  return (
-    <div className = "vs-page">
-      <div className = "bottom-wrap">
-        <aside className = "scoreboard panel">
-          <div className = "sb-title">SCOREBOARD</div>
+  function OriginalPicks({ p1Hands, p2Hands }) {
+    return (
+      <div className="peek-inline panel" role="note" aria-label="Original picks">
+        <div className="muted" style={{ marginBottom: 6 }}>Original Choices</div>
+        <div className="peek-grid">
+          <div>
+            <div className="muted">Player 1 chose</div>
+            <div className="peek-row">
+              <div className="peek-emoji">{EMOJI[p1Hands[0]]}</div>
+              <div className="peek-emoji">{EMOJI[p1Hands[1]]}</div>
+            </div>
+          </div>
+          <div>
+            <div className="muted">Player 2 chose</div>
+            <div className="peek-row">
+              <div className="peek-emoji">{EMOJI[p2Hands[0]]}</div>
+              <div className="peek-emoji">{EMOJI[p2Hands[1]]}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-          <div className = "sb-row">
-            <div className = "sb-label">PLAYER 1</div>
-            <div className = "sb-score">{score.p1}</div>
+  return (
+    <div className="vs-page">
+      <div className="bottom-wrap">
+        <aside className="scoreboard panel">
+          <div className="sb-title">SCOREBOARD</div>
+
+          <div className="sb-row">
+            <div className="sb-label">PLAYER 1</div>
+            <div className="sb-score">{score.p1}</div>
           </div>
 
-          <div className = "sb-divider" />
+          <div className="sb-divider" />
 
-          <div className = "sb-row">
-            <div className = "sb-label">PLAYER 2</div>
-            <div className = "sb-score">{score.p2}</div>
+          <div className="sb-row">
+            <div className="sb-label">PLAYER 2</div>
+            <div className="sb-score">{score.p2}</div>
           </div>
         </aside>
 
-        <div className = "center-col">
-          <h1 className = "page-title">VS LOCAL</h1>
-          <div className = "phase-callout panel">{phaseText}</div>
+        <div className="center-col">
+          <h1 className="page-title">VS LOCAL</h1>
+          <div className="phase-callout panel">{phaseText}</div>
 
           {phase === P.P1_PICK && (
-            <section className = "panel vstack stage-center">
-              <TwoHandPicker value = {p1Hands} onChange = {setP1Hands} />
-              <div className = "hstack center" style = {{marginTop: 12}}>
+            <section className="panel vstack stage-center">
+              <TwoHandPicker value={p1Hands} onChange={setP1Hands} />
+              <div className="hstack center" style={{marginTop: 12}}>
                 <button
-                  className = "btn primary"
-                  disabled = {!p1Ready}
-                  onClick = {() => setPhase(P.P2_PICK)}
+                  className="btn primary"
+                  disabled={!p1Ready}
+                  onClick={() => setPhase(P.P2_PICK)}
                 >
                   Next ▶
                 </button>
                 <button
-                  className = "btn ghost"
-                  onClick = {() => setP1Hands([null, null])}
+                  className="btn ghost"
+                  onClick={() => setP1Hands([null, null])}
                 >
                   Clear
                 </button>
@@ -161,19 +185,19 @@ export default function VsLocal() {
           )}
 
           {phase === P.P2_PICK && (
-            <section className = "panel vstack stage-center">
-              <TwoHandPicker value = {p2Hands} onChange = {setP2Hands} />
-              <div className = "hstack center" style = {{marginTop: 12}}>
+            <section className="panel vstack stage-center">
+              <TwoHandPicker value={p2Hands} onChange={setP2Hands} />
+              <div className="hstack center" style={{marginTop: 12}}>
                 <button
-                  className = "btn primary"
-                  disabled = {!p2Ready}
-                  onClick = {() => setPhase(P.SHOW)}
+                  className="btn primary"
+                  disabled={!p2Ready}
+                  onClick={() => setPhase(P.SHOW)}
                 >
                   Reveal ▶
                 </button>
                 <button
-                  className = "btn ghost"
-                  onClick = {() => setP2Hands([null, null])}
+                  className="btn ghost"
+                  onClick={() => setP2Hands([null, null])}
                 >
                   Clear
                 </button>
@@ -182,27 +206,27 @@ export default function VsLocal() {
           )}
 
           {phase === P.SHOW && (
-            <section className = "panel vstack center stage-center peek-phase" style = {{textAlign: "center"}}>
-              <div className = "peek-grid">
+            <section className="panel vstack center stage-center peek-phase" style={{textAlign: "center"}}>
+              <div className="peek-grid">
                 <div>
-                  <div className = "muted">Player 1 chose</div>
-                  <div className = "peek-row">
-                    <div className = "peek-emoji">{EMOJI[p1Hands[0]]}</div>
-                    <div className = "peek-emoji">{EMOJI[p1Hands[1]]}</div>
+                  <div className="muted">Player 1 chose</div>
+                  <div className="peek-row">
+                    <div className="peek-emoji">{EMOJI[p1Hands[0]]}</div>
+                    <div className="peek-emoji">{EMOJI[p1Hands[1]]}</div>
                   </div>
                 </div>
                 <div>
-                  <div className = "muted">Player 2 chose</div>
-                  <div className = "peek-row">
-                    <div className = "peek-emoji">{EMOJI[p2Hands[0]]}</div>
-                    <div className = "peek-emoji">{EMOJI[p2Hands[1]]}</div>
+                  <div className="muted">Player 2 chose</div>
+                  <div className="peek-row">
+                    <div className="peek-emoji">{EMOJI[p2Hands[0]]}</div>
+                    <div className="peek-emoji">{EMOJI[p2Hands[1]]}</div>
                   </div>
                 </div>
               </div>
               <button
-                className = "btn primary"
-                style = {{marginTop: 16}}
-                onClick = {() => setPhase(P.P1_MINUS)}
+                className="btn primary"
+                style={{marginTop: 16}}
+                onClick={() => setPhase(P.P1_MINUS)}
               >
                 Continue to Minus One ▶
               </button>
@@ -210,17 +234,19 @@ export default function VsLocal() {
           )}
 
           {phase === P.P1_MINUS && (
-            <section className = "panel vstack minus-phase stage-center">
+            <section className="panel vstack minus-phase stage-center">
+              <OriginalPicks p1Hands={p1Hands} p2Hands={p2Hands} />
+
               <MinusOnePhase
-                hands = {p1Hands}
-                removedIndex = {p1Removed}
-                onRemove = {setP1Removed}
+                hands={p1Hands}
+                removedIndex={p1Removed}
+                onRemove={setP1Removed}
               />
-              <div className = "hstack center" style = {{marginTop: 12}}>
+              <div className="hstack center" style={{marginTop: 12}}>
                 <button
-                  className = "btn primary"
-                  disabled = {p1Removed === null}
-                  onClick = {() => setPhase(P.P2_MINUS)}
+                  className="btn primary"
+                  disabled={p1Removed === null}
+                  onClick={() => setPhase(P.P2_MINUS)}
                 >
                   Next ▶
                 </button>
@@ -229,17 +255,19 @@ export default function VsLocal() {
           )}
 
           {phase === P.P2_MINUS && (
-            <section className = "panel vstack minus-phase stage-center">
+            <section className="panel vstack minus-phase stage-center">
+              <OriginalPicks p1Hands={p1Hands} p2Hands={p2Hands} />
+
               <MinusOnePhase
-                hands = {p2Hands}
-                removedIndex = {p2Removed}
-                onRemove = {setP2Removed}
+                hands={p2Hands}
+                removedIndex={p2Removed}
+                onRemove={setP2Removed}
               />
-              <div className = "hstack center" style = {{marginTop: 12}}>
+              <div className="hstack center" style={{marginTop: 12}}>
                 <button
-                  className = "btn primary"
-                  disabled = {p2Removed === null}
-                  onClick = {toReveal}
+                  className="btn primary"
+                  disabled={p2Removed === null}
+                  onClick={toReveal}
                 >
                   Reveal ▶
                 </button>
@@ -248,26 +276,26 @@ export default function VsLocal() {
           )}
 
           {phase === P.REVEAL && (
-            <section className = "panel vstack center stage-center" style = {{textAlign: "center"}}>
-              <div className = "reveal-row">
+            <section className="panel vstack center stage-center" style={{textAlign: "center"}}>
+              <div className="reveal-row">
                 <div>
-                  <div className = "muted">P1</div>
-                  <div className = "reveal-emoji">{EMOJI[p1Final]}</div>
+                  <div className="muted">P1</div>
+                  <div className="reveal-emoji">{EMOJI[p1Final]}</div>
                 </div>
-                <div className = "muted">vs</div>
+                <div className="muted">vs</div>
                 <div>
-                  <div className = "muted">P2</div>
-                  <div className = "reveal-emoji">{EMOJI[p2Final]}</div>
+                  <div className="muted">P2</div>
+                  <div className="reveal-emoji">{EMOJI[p2Final]}</div>
                 </div>
               </div>
-              <div className = "round-outcome">
+              <div className="round-outcome">
                 {outcome === "draw"
                   ? "Draw"
                   : outcome === "p1"
                   ? "Player 1 wins the round"
                   : "Player 2 wins the round"}
               </div>
-              <button className = "btn btn-wide" onClick = {nextRound} style = {{marginTop: 8}}>
+              <button className="btn btn-wide" onClick={nextRound} style={{marginTop: 8}}>
                 Next Round
               </button>
             </section>
