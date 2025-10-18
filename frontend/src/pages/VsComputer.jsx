@@ -94,7 +94,6 @@ export default function VsComputer() {
 
     return (
       <div className="endpage">
-        <h1 className="end-title">ROCK PAPER SCISSORS</h1>
         <div className={`end-result ${youWin ? "win" : "lose"}`}>
           {youWin ? "YOU WIN!" : "YOU LOSE!"}
         </div>
@@ -127,7 +126,7 @@ export default function VsComputer() {
             PLAY ANOTHER GAME
           </button>
           <Link className="btn ghost end-btn outline" to="/">
-            RETURN TO MAIN MENU
+            RETURN HOME
           </Link>
         </div>
       </div>
@@ -136,7 +135,7 @@ export default function VsComputer() {
 
   function OriginalPicks({ p1Hands, botHands }) {
     return (
-      <div className="peek-inline panel" role="note" aria-label="Original picks">
+      <div className="peek-inline panel">
         <div className="muted" style={{ marginBottom: 6 }}>Original picks</div>
         <div className="peek-grid">
           <div>

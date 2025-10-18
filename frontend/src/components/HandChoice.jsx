@@ -6,11 +6,10 @@ export default function HandChoice({move, selected, disabled, onClick}) {
     <button
       type = "button"
       className = {`hand-btn ${selected ? "is-selected" : ""}`}
-      aria-pressed = {selected}
       onClick = {onClick}
       disabled = {disabled}
     >
-      <span className = "hand-emoji" aria-hidden>
+      <span className = "hand-emoji">
         {EMOJI[move]}
       </span>
       <span className = "hand-label">

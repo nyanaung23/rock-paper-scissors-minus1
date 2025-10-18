@@ -11,11 +11,10 @@ export default function MinusOnePhase({hands, removedIndex, onRemove, disabled})
             key = {idx}
             type = "button"
             className = {`hand-btn ${isRemoved ? "is-selected is-removed" : ""}`}
-            aria-pressed = {isRemoved}
             onClick = {() => onRemove(idx)}
             disabled = {disabled}
           >
-            <span className = "hand-emoji" aria-hidden>
+            <span className = "hand-emoji">
               {EMOJI[m]}
             </span>
             <span className = "hand-label small">

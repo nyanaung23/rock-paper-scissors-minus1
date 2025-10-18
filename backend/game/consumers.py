@@ -115,6 +115,7 @@ class RPSConsumer(AsyncJsonWebsocketConsumer):
 
         if msg == "pick.set" and sender_role in ("p1", "p2"):
             state[f"{sender_role}Hands"] = content.get("hands", [None, None])
+            # changing hands un-readies "show" for that sender
             ready["show"][sender_role] = False
 
         elif msg == "phase.show" and sender_role in ("p1", "p2"):
@@ -129,33 +130,30 @@ class RPSConsumer(AsyncJsonWebsocketConsumer):
                 state["phase"] = "pick"
 
         elif msg == "phase.minus":
+            # Enter minus phase; clear any previous minus readiness
             state["phase"] = "minus"
             ready["minus"] = {"p1": False, "p2": False}
+            # keep p1Removed/p2Removed as-is or reset as you prefer; here we keep them
 
+        # --------- FIXED: allow simultaneous minus choices ----------
         elif msg == "minus.choice" and sender_role in ("p1", "p2"):
-            if state.get("phase") != "minus":
-                pass
-            else:
+            if state.get("phase") == "minus":
                 idx = content.get("index")
                 if idx in (0, 1):
-                    if ready["minus"].get(sender_role, False):
-                        pass
-                    else:
-                        if sender_role == "p2" and not ready["minus"]["p1"]:
-                            pass
-                        else:
-                            state[f"{sender_role}Removed"] = idx
-                            ready["minus"][sender_role] = False
+                    # If the player already pressed Reveal, ignore further changes
+                    if not ready["minus"].get(sender_role, False):
+                        state[f"{sender_role}Removed"] = idx
+                        # Do NOT auto-ready here; the explicit "phase.reveal" drives readiness.
+            # else: ignore if not in minus phase
 
+        # --------- FIXED: each player can press Reveal independently ----------
         elif msg == "phase.reveal" and sender_role in ("p1", "p2"):
             if state.get("phase") == "minus":
-                if sender_role == "p1":
-                    if state.get("p1Removed") is not None:
-                        ready["minus"]["p1"] = True
-                elif sender_role == "p2":
-                    if ready["minus"]["p1"] and state.get("p2Removed") is not None:
-                        ready["minus"]["p2"] = True
+                # Only set ready if this player has actually removed one
+                if state.get(f"{sender_role}Removed") is not None:
+                    ready["minus"][sender_role] = True
 
+                # If both have revealed, compute outcome and move on
                 if ready["minus"]["p1"] and ready["minus"]["p2"]:
                     p1_final = state["p1Hands"][1 - state["p1Removed"]]
                     p2_final = state["p2Hands"][1 - state["p2Removed"]]
@@ -172,10 +170,9 @@ class RPSConsumer(AsyncJsonWebsocketConsumer):
                     elif state["score"]["p2"] >= TARGET:
                         state["matchWinner"] = "p2"
                 else:
+                    # Stay in minus while waiting for the other player
                     state["phase"] = "minus"
-
-            else:
-                pass
+            # else: ignore if not in minus phase
 
         elif msg == "round.next":
             state.update({

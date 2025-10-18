@@ -5,23 +5,44 @@ import VsComputer from "./pages/VsComputer";
 import VsLocal from "./pages/VsLocal";
 import OnlineLobby from "./pages/OnlineLobby";
 import OnlineGame from "./pages/OnlineGame";
+import "./navbar.css";
 
 function Shell() {
   const { pathname } = useLocation();
-  const active = (p) => (typeof p==="function" ? p() : pathname===p) ? {background:"#fffff",borderRadius:10,padding:"6px 10px"} : {padding:"6px 10px"};
+  const isActive = (path) => {
+    if (typeof path === "function") {
+      return path();
+    }
+    return pathname === path;
+  };
 
   return (
-    <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", background:"#0f1220", color:"#e8ebff", fontFamily:"system-ui" }}>
-      <header style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 20px", background:"#171a2b" }}>
-        <Link to="/" style={{ color:"inherit", textDecoration:"none", fontWeight:800 }}>Rock Paper Scissors Minus 1</Link>
-        <nav style={{ display:"flex", gap:12 }}>
-          <Link to="/vs-computer" style={{ color:"inherit", textDecoration:"none", ...active("/vs-computer") }}>vs Computer</Link>
-          <Link to="/vs-local" style={{ color:"inherit", textDecoration:"none", ...active("/vs-local") }}>vs Local</Link>
-          <Link to="/online" style={{ color:"inherit", textDecoration:"none", ...active(() => pathname.startsWith("/online")) }}>Online</Link>
+    <div style={{ minHeight:"100vh", overflow:"auto", display:"flex", flexDirection:"column", background:"var(--gradient-bg)", color:"var(--text-primary)", fontFamily:"'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+      <header className="navbar">
+        <Link to="/" className="navbar-brand">RPS-1</Link>
+        <nav className="navbar-nav">
+          <Link 
+            to="/vs-computer" 
+            className={`navbar-link ${isActive("/vs-computer") ? "active" : ""}`}
+          >
+            SINGLE
+          </Link>
+          <Link 
+            to="/online" 
+            className={`navbar-link ${isActive(() => pathname.startsWith("/online")) ? "active" : ""}`}
+          >
+            ONLINE
+          </Link>
+          <Link 
+            to="/vs-local" 
+            className={`navbar-link ${isActive("/vs-local") ? "active" : ""}`}
+          >
+            LOCAL
+          </Link>
         </nav>
       </header>
 
-      <main style={{ flex:1, padding:20 }}>
+      <main className="page-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/vs-computer" element={<VsComputer />} />
@@ -31,7 +52,7 @@ function Shell() {
         </Routes>
       </main>
 
-      <footer style={{ padding:14, background:"#171a2b", color:"#9aa3c7" }}>
+      <footer style={{ padding:14, background:"rgba(15, 18, 32, 0.95)", color:"var(--text-muted)", borderTop:"1px solid rgba(0, 58, 86, 0.3)" }}>
         By Nyan
       </footer>
     </div>
