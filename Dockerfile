@@ -17,5 +17,5 @@ COPY . .
 # Expose port
 EXPOSE 8080
 
-# Use Daphne for ASGI
+# Use Daphne for ASGI - WebSocket support enabled
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8080", "rps_online.asgi:application"]
