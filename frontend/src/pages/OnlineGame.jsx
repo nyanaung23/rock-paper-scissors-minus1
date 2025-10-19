@@ -84,7 +84,7 @@ export default function OnlineGame() {
         return `${wsOrigin}/ws/rps/${room}/`;
       } catch (_) {
         // Fallback: treat as host
-        const host = wsBase.replace(/^\/?+|\/?+$/g, "");
+        const host = wsBase.replace(/^\/+|\/+$/g, "");
         const { protocol } = window.location;
         const scheme = protocol === "https:" ? "wss://" : "ws://";
         return `${scheme}${host}/ws/rps/${room}/`;
