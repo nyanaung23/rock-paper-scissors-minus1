@@ -2,15 +2,25 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy requirements and install
-COPY requirements.txt .
+# Install system dependencies and upgrade pip in one layer
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --upgrade pip
+
+# Copy requirements and install Python dependencies
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app
-COPY . .
+# Copy the entire backend directory
+COPY backend/ .
+
+# Make start script executable and collect static files
+RUN chmod +x start.sh \
+    && python manage.py collectstatic --noinput
 
 # Expose port
-EXPOSE 8080
+EXPOSE $PORT
 
-# Use Daphne for WebSocket support
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8080", "rps_online.asgi:application"]
+# Use the start script
+CMD ["./start.sh"]
