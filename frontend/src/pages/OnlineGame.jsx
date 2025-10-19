@@ -83,7 +83,7 @@ export default function OnlineGame() {
         const wsOrigin = u.protocol === "https:" ? `wss://${u.host}` : `ws://${u.host}`;
         return `${wsOrigin}/ws/rps/${room}/`;
       } catch (_) {
-        // Fallback: treat as host
+
         const host = wsBase.replace(/^\/+|\/+$/g, "");
         const { protocol } = window.location;
         const scheme = protocol === "https:" ? "wss://" : "ws://";
@@ -91,7 +91,7 @@ export default function OnlineGame() {
       }
     }
 
-    // Next: derive from API base if provided
+
     const base = process.env.REACT_APP_API_URL || process.env.VITE_API_URL;
     if (base) {
       const u = new URL(base);
@@ -99,7 +99,7 @@ export default function OnlineGame() {
       return `${wsOrigin}/ws/rps/${room}/`;
     }
 
-    // Finally: same-origin
+
     const { protocol, host } = window.location;
     const scheme = protocol === "https:" ? "wss://" : "ws://";
     return `${scheme}${host}/ws/rps/${room}/`;
@@ -114,22 +114,35 @@ export default function OnlineGame() {
     }
     setWsError(null);
     const url = buildWsURL(roomCode);
+    console.log("Attempting WebSocket connection to:", url);
     let ws;
     try { ws = new WebSocket(url); } catch (err) { setWsError(`WebSocket create failed. ${String(err)}`); return; }
     wsRef.current = ws;
 
-    ws.onopen = () => console.log("WS open ✔");
+    ws.onopen = () => {
+      console.log("WS open ✔");
+      setWsError(null);
+    };
     ws.onmessage = (e) => {
       try {
         const msg = JSON.parse(e.data);
+        console.log("WS message:", msg);
         if (msg.type === "joined") { setRole(msg.role); setState(msg.state); }
         else if (msg.type === "state") { setState(msg.state); }
       } catch {
         setWsError("Bad message from server (parse error).");
       }
     };
-    ws.onerror = () => setWsError("WebSocket error. Check backend logs.");
-    ws.onclose = () => console.warn("WS closed");
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      setWsError(`WebSocket error. URL: ${url}. Check backend logs.`);
+    };
+    ws.onclose = (event) => {
+      console.warn("WS closed:", event.code, event.reason);
+      if (event.code !== 1000) {
+        setWsError(`Connection closed unexpectedly (${event.code}): ${event.reason || 'No reason provided'}`);
+      }
+    };
 
     return () => ws.close();
   }, [roomCode, hasValidCode]);

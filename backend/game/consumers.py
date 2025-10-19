@@ -34,12 +34,16 @@ class RPSConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.code = self.scope["url_route"]["kwargs"]["room_code"].upper()
         self.group_name = f"room_{self.code}"
+        
+        print(f"WebSocket connection attempt for room: {self.code}")
 
         room = await get_room(self.code)
         if not room:
+            print(f"Room {self.code} not found, closing connection")
             await self.close()
             return
 
+        print(f"Room {self.code} found, accepting connection")
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 

@@ -1,1 +1,1 @@
-web: ./start.sh
+web: daphne -b 0.0.0.0 -p $PORT rps_online.asgi:application

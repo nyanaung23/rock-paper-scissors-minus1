@@ -1,8 +1,17 @@
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from .models import Room
 from .utils import generate_code, initial_state
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def health_check(request):
+    """
+    GET /api/health/
+    Simple health check endpoint
+    """
+    return JsonResponse({"status": "ok", "message": "Backend is running"})
 
 @csrf_exempt
 @require_POST
