@@ -71,12 +71,35 @@ export default function OnlineGame() {
   const revealSentRef = useRef(false);
 
   function buildWsURL(room) {
-    const base = process.env.REACT_APP_API_URL;
+    // Highest priority: dedicated WS base if provided
+    const wsBase = process.env.REACT_APP_WS_URL || process.env.VITE_WS_URL;
+    if (wsBase) {
+      // Accept full ws(s):// URLs or http(s):// and convert
+      try {
+        const u = new URL(wsBase);
+        if (u.protocol === "ws:" || u.protocol === "wss:") {
+          return `${u.protocol}//${u.host}/ws/rps/${room}/`;
+        }
+        const wsOrigin = u.protocol === "https:" ? `wss://${u.host}` : `ws://${u.host}`;
+        return `${wsOrigin}/ws/rps/${room}/`;
+      } catch (_) {
+        // Fallback: treat as host
+        const host = wsBase.replace(/^\/?+|\/?+$/g, "");
+        const { protocol } = window.location;
+        const scheme = protocol === "https:" ? "wss://" : "ws://";
+        return `${scheme}${host}/ws/rps/${room}/`;
+      }
+    }
+
+    // Next: derive from API base if provided
+    const base = process.env.REACT_APP_API_URL || process.env.VITE_API_URL;
     if (base) {
       const u = new URL(base);
       const wsOrigin = u.protocol === "https:" ? `wss://${u.host}` : `ws://${u.host}`;
       return `${wsOrigin}/ws/rps/${room}/`;
     }
+
+    // Finally: same-origin
     const { protocol, host } = window.location;
     const scheme = protocol === "https:" ? "wss://" : "ws://";
     return `${scheme}${host}/ws/rps/${room}/`;

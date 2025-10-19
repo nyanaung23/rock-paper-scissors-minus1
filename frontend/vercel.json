@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "env": {
+    "REACT_APP_API_URL": "https://rock-paper-scissors-minus-1-production.up.railway.app",
+    "REACT_APP_WS_URL": "wss://rock-paper-scissors-minus-1-production.up.railway.app"
+  }
+}
