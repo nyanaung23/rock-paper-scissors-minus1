@@ -189,7 +189,7 @@ export default function VsComputer() {
                   disabled={!bothChosenTwo}
                   onClick={goShow}
                 >
-                  Reveal ▶
+                  Reveal
                 </button>
                 <button
                   className="btn ghost"
@@ -221,7 +221,7 @@ export default function VsComputer() {
               </div>
 
               <button className="btn primary" style={{marginTop: 16}} onClick={goMinus}>
-                Continue to Minus One ▶
+                Continue to Minus One
               </button>
             </section>
           )}
@@ -241,7 +241,7 @@ export default function VsComputer() {
                 disabled={p1Removed === null}
                 onClick={doReveal}
               >
-                Reveal ▶
+                Reveal
               </button>
             </section>
           )}

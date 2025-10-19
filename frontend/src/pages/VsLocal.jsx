@@ -76,6 +76,7 @@ export default function VsLocal() {
 
     return (
       <div className="endpage">
+        <h1 className="end-title">ROCK PAPER SCISSORS</h1>
         <div className={`end-result ${p1Wins ? "win" : "lose"}`}>
           {p1Wins ? "PLAYER 1 WINS!" : "PLAYER 2 WINS!"}
         </div>
@@ -108,7 +109,7 @@ export default function VsLocal() {
             PLAY ANOTHER GAME
           </button>
           <Link className="btn ghost end-btn outline" to="/">
-            RETURN HOME
+            RETURN TO MAIN MENU
           </Link>
         </div>
       </div>
@@ -117,7 +118,7 @@ export default function VsLocal() {
 
   function OriginalPicks({ p1Hands, p2Hands }) {
     return (
-      <div className="peek-inline panel">
+      <div className="peek-inline panel" role="note" aria-label="Original picks">
         <div className="muted" style={{ marginBottom: 6 }}>Original Choices</div>
         <div className="peek-grid">
           <div>
@@ -171,7 +172,7 @@ export default function VsLocal() {
                   disabled={!p1Ready}
                   onClick={() => setPhase(P.P2_PICK)}
                 >
-                  Next ▶
+                  Next
                 </button>
                 <button
                   className="btn ghost"
@@ -192,7 +193,7 @@ export default function VsLocal() {
                   disabled={!p2Ready}
                   onClick={() => setPhase(P.SHOW)}
                 >
-                  Reveal ▶
+                  Reveal
                 </button>
                 <button
                   className="btn ghost"
@@ -227,7 +228,7 @@ export default function VsLocal() {
                 style={{marginTop: 16}}
                 onClick={() => setPhase(P.P1_MINUS)}
               >
-                Continue to Minus One ▶
+                Continue to Minus One
               </button>
             </section>
           )}
@@ -247,7 +248,7 @@ export default function VsLocal() {
                   disabled={p1Removed === null}
                   onClick={() => setPhase(P.P2_MINUS)}
                 >
-                  Next ▶
+                  Next
                 </button>
               </div>
             </section>
@@ -268,7 +269,7 @@ export default function VsLocal() {
                   disabled={p2Removed === null}
                   onClick={toReveal}
                 >
-                  Reveal ▶
+                  Reveal
                 </button>
               </div>
             </section>

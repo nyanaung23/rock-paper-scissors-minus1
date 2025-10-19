@@ -61,7 +61,7 @@ export default function OnlineLobby() {
   }
 
   return (
-    <div className="vs-page">
+    <div className="vs-page online-lobby-page">
       <div className="center-col">
         <h1 className="page-title" style={{ marginBottom: 24 }}>PLAY ONLINE</h1>
         <div className="phase-callout panel" style={{ marginBottom: 15 }}>
