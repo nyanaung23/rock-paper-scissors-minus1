@@ -33,10 +33,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# WebSocket-specific settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Additional WebSocket debugging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -62,7 +60,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
     "http://localhost:5173",
-    # If you serve a static frontend from Railway, add it here too
     "https://rock-paper-scissors-minus1.vercel.app",
     "https://rock-paper-scissors-minus1-3f9v44dd3-nyanaung23s-projects.vercel.app",
 ]
@@ -72,9 +69,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "https://rock-paper-scissors-minus1.vercel.app",
     "https://rock-paper-scissors-minus1-3f9v44dd3-nyanaung23s-projects.vercel.app",
-    # Allow Vercel preview deploys
     "https://*.vercel.app",
-    # Your Railway app hostname (for admin / browsable API CSRF correctness)
     "https://rock-paper-scissors-minus-1-production.up.railway.app",
 ]
 
@@ -99,7 +94,6 @@ TEMPLATES = [
 ASGI_APPLICATION = "rps_online.asgi.application"
 WSGI_APPLICATION = "rps_online.wsgi.application"
 
-# Use Redis in production if available, otherwise fall back to InMemory
 if os.environ.get("REDIS_URL"):
     CHANNEL_LAYERS = {
         "default": {
@@ -137,7 +131,6 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Security settings for production
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True

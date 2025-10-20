@@ -71,10 +71,8 @@ export default function OnlineGame() {
   const revealSentRef = useRef(false);
 
   function buildWsURL(room) {
-    // Highest priority: dedicated WS base if provided
     const wsBase = process.env.REACT_APP_WS_URL || process.env.VITE_WS_URL;
     if (wsBase) {
-      // Accept full ws(s):// URLs or http(s):// and convert
       try {
         const u = new URL(wsBase);
         if (u.protocol === "ws:" || u.protocol === "wss:") {
